@@ -1,14 +1,15 @@
 //Mirror
-#include <Mirror\Core\Display.hpp>
-#include <Mirror\Core\Input.hpp>
+#include <SmokCore\Core\Engine.hpp>
 
-#include <Mirror\ECS\Entity.hpp>
-#include <Mirror\Scene\Scene.hpp>
-#include <Mirror\Util\Time.hpp>
+#include <SmokCore\ECS\Entity.hpp>
+#include <SmokCore\Scene\Scene.hpp>
+#include <SmokCore\Util\Time.hpp>
 
 #include <Mirror\ECS\Systems\SpriteRenderer.hpp>
 #include <Mirror\ECS\Systems\BatchSpriteRenderer.hpp>
 
+#include <SmokCore\ECS\Components\Transform.hpp>
+#include <SmokCore\ECS\Components\Camera.hpp>
 #include <Mirror\ECS\Components\BoxCollider.hpp>
 
 //Glfix
@@ -23,7 +24,7 @@
 //other
 #include <stdio.h>
 
-inline void OnPlayerColllide(Mirror::ECS::Entity* self, Mirror::ECS::Entity* other)
+inline void OnPlayerColllide(SmokCore::ECS::Entity* self, SmokCore::ECS::Entity* other)
 {
 	printf("Collide!\n");
 }
@@ -33,15 +34,20 @@ int main(int args, char* argv[])
 	//init app
 
 	//engine
+	SmokCore::Core::EngineCreateInfo engineInfo;
+	engineInfo.displayInfo.enableDepthBuffer = false;
+	engineInfo.displayInfo.name = "Floopy Bird";
+	engineInfo.displayInfo.lockMouse = false;
+	SmokCore::Core::Engine* engine = SmokCore::Core::Engine::Init(engineInfo);
 	//engine would store a list of tags and layers
 
 	//init display
-	Mirror::Core::Display* display = new Mirror::Core::Display("Floopy Bird", 800, 600);
-	display->SetClearColor(0.0f, 173.0f, 173.0f);
-	Glfix_Context_EnableBlending(true);
+	//SmokCore::Core::Display* display = new SmokCore::Core::Display("Floopy Bird", 800, 600);
+	//display->SetClearColor(0.0f, 173.0f, 173.0f);
+	//Glfix_Context_EnableBlending(true);
 
 	//init input manager
-	Mirror::Core::Input* input = new Mirror::Core::Input(display->GetWindow());
+	//SmokCore::Core::Input* input = new SmokCore::Core::Input(display->GetWindow());
 
 	//inits asset manager
 	//Mirror::Core::AssetManager* assetManager = new Mirror::Core::AssetManager(5);
@@ -55,20 +61,28 @@ int main(int args, char* argv[])
 	//assetManager->LoadAsset("Pipe End", "res/Textures/Pipe/PipeBodyEnd.asset");
 
 	//seeds random
-	Mirror::Util::Time::SeedRNG();
+	SmokCore::Util::Time::SeedRNG();
 
-	Glfix_Texture_CreateInfo info;
-	Glfix_Texture_InitCreateInfo(&info);
-	info.magFilterMode = Glfix_Texture_FilterMode_Nearest;
-	info.minFilterMode = Glfix_Texture_FilterMode_Nearest;
-	//bird
-	Glfix_Texture* flappyIdle = Glfix_Texture_Create2D("res/Textures/Bird/BirdIdle.png", &info, true);
-	Glfix_Texture* flappyFlap = Glfix_Texture_Create2D("res/Textures/Bird/BirdFlap.png", &info, true);
-	
-	//bird
-	Glfix_Texture* pipeHead = Glfix_Texture_Create2D("res/Textures/Pipe/PipeHead.png", &info, true);
-	Glfix_Texture* pipeBodyMid = Glfix_Texture_Create2D("res/Textures/Pipe/PipeBodyMid.png", &info, true);
-	Glfix_Texture* pipeBodyEnd = Glfix_Texture_Create2D("res/Textures/Pipe/PipeBodyEnd.png", &info, true);
+	//load textures
+	SmokCore::Core::Engine::GetInstance()->AssetManager()->CreateTexture2D("BirdIdle", "res/Textures/Bird/BirdIdle.png");
+	SmokCore::Core::Engine::GetInstance()->AssetManager()->CreateTexture2D("BirdFlap", "res/Textures/Bird/BirdFlap.png");
+
+	SmokCore::Core::Engine::GetInstance()->AssetManager()->CreateTexture2D("PipeHead", "res/Textures/Pipe/PipeHead.png");
+	SmokCore::Core::Engine::GetInstance()->AssetManager()->CreateTexture2D("PipeBodyMid", "res/Textures/Pipe/PipeBodyMid.png");
+	SmokCore::Core::Engine::GetInstance()->AssetManager()->CreateTexture2D("PipeBodyEnd", "res/Textures/Pipe/PipeBodyEnd.png");
+
+	//Glfix_Texture_CreateInfo info;
+	//Glfix_Texture_InitCreateInfo(&info);
+	//info.magFilterMode = Glfix_Texture_FilterMode_Nearest;
+	//info.minFilterMode = Glfix_Texture_FilterMode_Nearest;
+	////bird
+	//Glfix_Texture* flappyIdle = Glfix_Texture_Create2D("res/Textures/Bird/BirdIdle.png", &info, true);
+	//Glfix_Texture* flappyFlap = Glfix_Texture_Create2D("res/Textures/Bird/BirdFlap.png", &info, true);
+	//
+	////bird
+	//Glfix_Texture* pipeHead = Glfix_Texture_Create2D("res/Textures/Pipe/PipeHead.png", &info, true);
+	//Glfix_Texture* pipeBodyMid = Glfix_Texture_Create2D("res/Textures/Pipe/PipeBodyMid.png", &info, true);
+	//Glfix_Texture* pipeBodyEnd = Glfix_Texture_Create2D("res/Textures/Pipe/PipeBodyEnd.png", &info, true);
 
 	//set up systems
 
@@ -78,7 +92,9 @@ int main(int args, char* argv[])
 	Mirror::ECS::System::SpriteRenderer spriteRenderer;
 	spriteRenderer.Init(true, baseSpriteScale, maxQuadPerBatch);
 	Mirror::ECS::System::BatchSpriteRenderer batchRenderer;
-	batchRenderer.Init(maxQuadPerBatch, baseSpriteScale);
+
+	//WHY THE FUCK WON'T YOU WORK
+	//batchRenderer.Init(maxQuadPerBatch, baseSpriteScale);
 
 	//text renderer
 
@@ -87,19 +103,19 @@ int main(int args, char* argv[])
 	//physicsWorld.Init();
 
 	//game data
-	Mirror::Scene::Scene scene(5);
+	SmokCore::Scene::Scene scene(5);
 
 	//camera
-	Mirror::ECS::Entity* camera = scene.CreateEntity("Camera");
-	camera->AddComponent< Mirror::ECS::Comp::Camera>();
-	Mirror::Util::Vector3<float> pos = {(float)display->GetWidth() / 2, (float)display->GetHeight() / 2, 0.0f};
-	camera->AddComponent<Mirror::ECS::Comp::Transform>(pos, Mirror::Util::Vector3<float>::Zero(), Mirror::Util::Vector3<float>::One());
+	SmokCore::ECS::Entity* camera = scene.CreateEntity("Camera");
+	camera->AddComponent<SmokCore::ECS::Comp::Camera>();
+	SmokCore::Util::Vector3<float> pos = {(float)engine->Display()->GetWidth() / 2, (float)engine->Display()->GetHeight() / 2, 0.0f};
+	camera->AddComponent<SmokCore::ECS::Comp::Transform>(pos, SmokCore::Util::Vector3<float>::Zero(), SmokCore::Util::Vector3<float>::One());
 
 	//bird
 	Glfix_Texture* currentBirdFrame = flappyIdle;
-	Mirror::ECS::Entity* bird = scene.CreateEntity("Bird", "Bird");
-	pos = { (float)display->GetWidth() / 7, (float)display->GetHeight() / 2, 0.0f };
-	Mirror::Util::Vector3<float> s = { 100.0f, 100.0f, 1.0f };
+	SmokCore::ECS::Entity* bird = scene.CreateEntity("Bird", "Bird");
+	pos = { (float)engine->Display()->GetWidth() / 7, (float)engine->Display()->GetHeight() / 2, 0.0f };
+	SmokCore::Util::Vector3<float> s = { 100.0f, 100.0f, 1.0f };
 	bird->AddComponent<Mirror::ECS::Comp::Transform>(pos, Mirror::Util::Vector3<float>::Zero(), s);
 	bird->AddComponent<Mirror::ECS::Comp::Sprite>(Mirror::Util::Color::While(), (uint32_t)0, true);
 	Mirror::Util::Vector2<float> size = {100.0f, 100.0f};
@@ -144,14 +160,14 @@ int main(int args, char* argv[])
 		//randomize the scale
 		//scale.y = Mirror::Util::Time::RNG(pipeStartScale, pipeScaleLimit);
 		//scale.y = rand() % (int32_t)pipeScaleLimit;
-		topPipe->AddComponent<Mirror::ECS::Comp::Transform>(pos, Mirror::Util::Vector3<float>::Zero(), scale);
-		topPipe->AddComponent<Mirror::ECS::Comp::Sprite>(Mirror::Util::Color::While(), (uint32_t)1, true);
-		topPipe->AddComponent<Mirror::ECS::Comp::BoxCollider>(size, Mirror::Util::Vector2<float>::Zero(), nullptr, false, true);
+		topPipe->AddComponent<SmokCore::ECS::Comp::Transform>(pos, SmokCore::Util::Vector3<float>::Zero(), scale);
+		topPipe->AddComponent<Mirror::ECS::Comp::Sprite>(SmokCore::Util::Color::While(), (uint32_t)1, true);
+		topPipe->AddComponent<Mirror::ECS::Comp::BoxCollider>(size, SmokCore::Util::Vector2<float>::Zero(), nullptr, false, true);
 	}
 	topPipe = nullptr;
 
 	//genarates bottom pipes
-	Mirror::ECS::Entity* bottomPipe = nullptr;
+	SmokCore::ECS::Entity* bottomPipe = nullptr;
 	for (int32_t i = 0; i < pipeCount; ++i)
 	{
 		bottomPipe = scene.CreateEntity("Bottom Pipe", "Pipe");
@@ -165,14 +181,14 @@ int main(int args, char* argv[])
 			pos.x += pipeDist + baseSpriteScale;
 
 		//scale.y = Mirror::Util::Time::RNG(pipeStartScale, pipeScaleLimit);
-		bottomPipe->AddComponent<Mirror::ECS::Comp::Transform>(pos, Mirror::Util::Vector3<float>::Zero(), scale);
-		bottomPipe->AddComponent<Mirror::ECS::Comp::Sprite>(Mirror::Util::Color::While(), (uint32_t)1, true);
+		bottomPipe->AddComponent<SmokCore::ECS::Comp::Transform>(pos, SmokCore::Util::Vector3<float>::Zero(), scale);
+		bottomPipe->AddComponent<Mirror::ECS::Comp::Sprite>(SmokCore::Util::Color::While(), (uint32_t)1, true);
 		//collider
 	}
 	bottomPipe = nullptr;
 
 	//genarates point trigger space
-	Mirror::ECS::Entity* pipeTrigger = nullptr;
+	SmokCore::ECS::Entity* pipeTrigger = nullptr;
 	for (int32_t i = 0; i < pipeCount; ++i)
 	{
 		pipeTrigger = scene.CreateEntity("Pipe Trigger", "Score");
@@ -186,8 +202,8 @@ int main(int args, char* argv[])
 			pos.x += pipeDist + baseSpriteScale;
 
 		//scale.y = topPipes[i]->GetComponent< Mirror::ECS::Comp::Transform>()->scale.y - bottomPipes[i]->GetComponent< Mirror::ECS::Comp::Transform>()->scale.y;
-		pipeTrigger->AddComponent<Mirror::ECS::Comp::Transform>(pos, Mirror::Util::Vector3<float>::Zero(), scale);
-		pipeTrigger->AddComponent<Mirror::ECS::Comp::Sprite>(Mirror::Util::Color::While(), (uint32_t)1, true);
+		pipeTrigger->AddComponent<SmokCore::ECS::Comp::Transform>(pos, SmokCore::Util::Vector3<float>::Zero(), scale);
+		pipeTrigger->AddComponent<Mirror::ECS::Comp::Sprite>(SmokCore::Util::Color::While(), (uint32_t)1, true);
 		//collider
 	}
 	pipeTrigger = nullptr;
@@ -221,7 +237,7 @@ int main(int args, char* argv[])
 	while (display->IsRunning())
 	{
 		//cal delta time and fixed time
-		deltaTime = Mirror::Util::Time::CalDeltaTime();
+		deltaTime = SmokCore::Util::Time::CalDeltaTime();
 
 		//--input and update should be in a thread
 
@@ -429,11 +445,11 @@ int main(int args, char* argv[])
 	spriteRenderer.Shutdown();
 
 	//assets
-	delete flappyFlap;
-	delete flappyIdle;
-	delete pipeBodyEnd;
-	delete pipeBodyMid;
-	delete pipeHead;
+	//elete flappyFlap;
+	//elete flappyIdle;
+	//elete pipeBodyEnd;
+	//elete pipeBodyMid;
+	//elete pipeHead;
 
 	//engine
 
@@ -453,7 +469,8 @@ int main(int args, char* argv[])
 	}
 	*/
 
-	if(input)
+	SmokCore::Core::Engine::Shutdown();
+	/*if(input)
 	{
 		delete input;
 		input = nullptr;
@@ -464,6 +481,7 @@ int main(int args, char* argv[])
 		delete display;
 		display = nullptr;
 	}
+	*/
 
 	getchar();
 	return 0;

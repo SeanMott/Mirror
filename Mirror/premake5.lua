@@ -1,11 +1,20 @@
---the Mirror project lib
+configurations
+    {
+        "Debug",
+        "Release",
+        "Dist",
+    }
+
+    outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+    include "../Library/SmokCore"
 
 project "Mirror"
     kind "StaticLib"
     language "C++"
 
-    targetdir ("bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
-    objdir ("bin-obj/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/%{prj.name}")
+   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-obj/" .. outputdir .. "/%{prj.name}")
 
     --pchheader "smpch.h"
     --pchsource "%{prj.name}/src/smpch.cpp"
@@ -21,18 +30,19 @@ project "Mirror"
     includedirs
     {
         
-        "../Library/glm/glm",
-        "../Library/Glfix/includes",
-        "../Library/GLFW/include",
-        "../Library/FastDelegate",
-        "../Library/entt/src",
+        "../Library/SmokCore/Library/glm/glm",
+        "../Library/SmokCore/Library/Glfix/includes",
+        "../Library/SmokCore/Library/GLFW/include",
+        "../Library/SmokCore/Library/FastDelegate",
+        "../Library/SmokCore/Library/entt/src",
+        "../Library/SmokCore/Library",
         "includes",
         
     }
     
     links
     {
-        "Glfix"
+        "SmokCore"
     }
 
     defines

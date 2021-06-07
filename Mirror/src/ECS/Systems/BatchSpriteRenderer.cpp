@@ -128,18 +128,18 @@ void Mirror::ECS::System::BatchSpriteRenderer::EndQuadBatch()
 	Glfix_IndexBuffer_Draw(Glfix_DrawType_Triangles, 0, quadCount);
 }
 
-void Mirror::ECS::System::BatchSpriteRenderer::SetQuadBatchCamera(Mirror::ECS::Comp::Transform* transform, Mirror::ECS::Comp::Camera* cam)
+void Mirror::ECS::System::BatchSpriteRenderer::SetQuadBatchCamera(SmokCore::ECS::Comp::Transform* transform, SmokCore::ECS::Comp::Camera* cam)
 {
-	glm::mat4 projection = glm::ortho(cam->viewWidthMin, cam->viewWidthMax,
-		cam->viewHeightMax, cam->viewHeightMin, cam->nearFieldClipping, cam->farFieldClipping);
+	glm::mat4 projection = glm::ortho(cam->viewWidthMin, cam->viewWidth,
+		cam->viewHeight, cam->viewHeightMin, cam->nearFieldClipping, cam->farFieldClipping);
 	glm::mat4 camPos = glm::mat4(1.0f);
-	camPos = glm::translate(glm::mat4(1.0f), Mirror_Math_TypePun(transform->position, glm::vec3)) *
+	camPos = glm::translate(glm::mat4(1.0f), Smok_Math_TypePun(transform->position, glm::vec3)) *
 		glm::rotate(glm::mat4(1.0f), transform->rotation.x, glm::vec3(0.0f, 0.0f, 1.0f));
 	
 	Glfix_Shader_SetMat4(shader, "PV", false, &(projection * camPos)[0][0]);
 }
 
-void Mirror::ECS::System::BatchSpriteRenderer::AddQuad(Mirror::ECS::Comp::Transform* transform, Mirror::ECS::Comp::Sprite* sprite)
+void Mirror::ECS::System::BatchSpriteRenderer::AddQuad(SmokCore::ECS::Comp::Transform* transform, Mirror::ECS::Comp::Sprite* sprite)
 {
 	if (quadCount >= maxQuadsPerBatch)
 	{

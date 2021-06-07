@@ -2,16 +2,16 @@
 
 //defines a Batch Sprite Renderer
 
-#include <Mirror\Util\Math.hpp>
-#include <Mirror\Util\Color.hpp>
+#include <SmokCore\Util\Math.hpp>
+#include <SmokCore\Util\Color.hpp>
 
 #include <Glfix\VertexBuffer.h>
 #include <Glfix\IndexBuffer.h>
 #include <Glfix\Texture.h>
 #include <Glfix\Shader.h>
 
-#include <Mirror\ECS\Components\Camera.hpp>
-#include <Mirror\ECS\Components\Transform.hpp>
+#include <SmokCore\ECS\Components\Camera.hpp>
+#include <SmokCore\ECS\Components\Transform.hpp>
 #include <Mirror\ECS\Components\Sprite.hpp>
 
 namespace Mirror::ECS::System
@@ -19,10 +19,10 @@ namespace Mirror::ECS::System
 	//defines a Quad
 	struct Quad
 	{
-		Mirror::Util::Vector2<float> position;
-		Mirror::Util::Vector2<float> texCords;
+		SmokCore::Util::Vector2<float> position;
+		SmokCore::Util::Vector2<float> texCords;
 		//add stuff for lighting
-		Mirror::Util::Color color;
+		SmokCore::Util::Color color;
 		float textureId = 0;
 	};
 
@@ -68,9 +68,9 @@ namespace Mirror::ECS::System
 		void EndQuadBatch();
 
 		//sets the camera for the Quad batch
-		void SetQuadBatchCamera(Mirror::ECS::Comp::Transform* transform, Mirror::ECS::Comp::Camera* cam);
+		void SetQuadBatchCamera(SmokCore::ECS::Comp::Transform* transform, SmokCore::ECS::Comp::Camera* cam);
 		//adds a quad to the Quad batch
-		void AddQuad(Mirror::ECS::Comp::Transform* transform, Mirror::ECS::Comp::Sprite* sprite);
+		void AddQuad(SmokCore::ECS::Comp::Transform* transform, Mirror::ECS::Comp::Sprite* sprite);
 
 	};
 }

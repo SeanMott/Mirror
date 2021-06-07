@@ -3,8 +3,8 @@
 #ifndef SpriteRenderer_h
 #define SpriteRenderer_h
 
-#include <Mirror\ECS\Components\Camera.hpp>
-#include <Mirror\ECS\Components\Transform.hpp>
+#include <SmokCore\ECS\Components\Camera.hpp>
+#include <SmokCore\ECS\Components\Transform.hpp>
 #include <Mirror\ECS\Components\Sprite.hpp>
 
 #include <Glfix\Shader.h>
@@ -65,20 +65,20 @@ namespace Mirror::ECS::System
 		void Shutdown();
 
 		//renders a single Quad with a draw call (not batched)
-		void SingleSpriteRender(ECS::Comp::Camera& cam, ECS::Comp::Transform& camTrans,
-			ECS::Comp::Sprite& entitySprite, ECS::Comp::Transform& entityTrans, Glfix_Texture* texture = nullptr);
+		void SingleSpriteRender(SmokCore::ECS::Comp::Camera& cam, SmokCore::ECS::Comp::Transform& camTrans,
+			ECS::Comp::Sprite& entitySprite, SmokCore::ECS::Comp::Transform& entityTrans, Glfix_Texture* texture = nullptr);
 		//renders a single Quad with a draw call (not batched)
-		void SingleSpriteRender(ECS::Comp::Camera& cam, ECS::Comp::Transform& camTrans,
-			ECS::Comp::Sprite& entitySprite, ECS::Comp::Transform& entityTrans, const float baseSpriteScaleOverride, Glfix_Texture* texture = nullptr);
+		void SingleSpriteRender(SmokCore::ECS::Comp::Camera& cam, SmokCore::ECS::Comp::Transform& camTrans,
+			ECS::Comp::Sprite& entitySprite, SmokCore::ECS::Comp::Transform& entityTrans, const float baseSpriteScaleOverride, Glfix_Texture* texture = nullptr);
 	
 		//sets the camera
-		void SetCamera(ECS::Comp::Camera* cam, ECS::Comp::Transform* camTrans);
+		void SetCamera(SmokCore::ECS::Comp::Camera* cam, SmokCore::ECS::Comp::Transform* camTrans);
 		//begins the batch
 		void BeginBatch();
 		//ends the batch
 		void EndBatch();
 		//push data into the batch
-		void AddQuad(ECS::Comp::Sprite* sprite, ECS::Comp::Transform* transform);
+		void AddQuad(ECS::Comp::Sprite* sprite, SmokCore::ECS::Comp::Transform* transform);
 		//flushs data
 		void Flush();
 

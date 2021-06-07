@@ -150,8 +150,8 @@ void Mirror::ECS::System::SpriteRenderer::Shutdown()
 
 static bool spriteRendererErrorWarning = false;
 
-void Mirror::ECS::System::SpriteRenderer::SingleSpriteRender(ECS::Comp::Camera& cam, ECS::Comp::Transform& camTrans,
-	ECS::Comp::Sprite& entitySprite, ECS::Comp::Transform& entityTrans, Glfix_Texture* texture)
+void Mirror::ECS::System::SpriteRenderer::SingleSpriteRender(SmokCore::ECS::Comp::Camera& cam, SmokCore::ECS::Comp::Transform& camTrans,
+	ECS::Comp::Sprite& entitySprite, SmokCore::ECS::Comp::Transform& entityTrans, Glfix_Texture* texture)
 {
 	if (!singleQuadRenderIsEnabled)
 		return;
@@ -182,15 +182,15 @@ void Mirror::ECS::System::SpriteRenderer::SingleSpriteRender(ECS::Comp::Camera& 
 	Glfix_Texture_Bind((texture != nullptr ? texture : blankTexture), 0);
 	
 	//sets camera
-	glm::mat4 projection = glm::ortho(cam.viewWidthMin, cam.viewWidthMax,
-		cam.viewHeightMax, cam.viewHeightMin, cam.nearFieldClipping, cam.farFieldClipping);
+	glm::mat4 projection = glm::ortho(cam.viewWidthMin, cam.viewWidth,
+		cam.viewHeight, cam.viewHeightMin, cam.nearFieldClipping, cam.farFieldClipping);
 	glm::mat4 camPos = glm::mat4(1.0f);
-	camPos = glm::translate(glm::mat4(1.0f), Mirror_Math_TypePun(camTrans.position, glm::vec3)) *
+	camPos = glm::translate(glm::mat4(1.0f), Smok_Math_TypePun(camTrans.position, glm::vec3)) *
 		glm::rotate(glm::mat4(1.0f), camTrans.rotation.x, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	//positions sprite
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, Mirror_Math_TypePun(entityTrans.position, glm::vec3)) * //position
+	model = glm::translate(model, Smok_Math_TypePun(entityTrans.position, glm::vec3)) * //position
 
 	//rotation
 	glm::translate(model, glm::vec3(0.5f * entityTrans.scale.x /*(entityTrans.scale.x * baseSpriteScale)*/, entityTrans.scale.y /*(entityTrans.scale.y * baseSpriteScale)*/, 0.0f)) *//; // move origin of rotation to center of quad
@@ -211,8 +211,8 @@ void Mirror::ECS::System::SpriteRenderer::SingleSpriteRender(ECS::Comp::Camera& 
 	Glfix_VertexBuffer_Draw(Glfix_DrawType_Triangles, 0, singleQuadVertexBuffer->size);
 }
 
-void Mirror::ECS::System::SpriteRenderer::SingleSpriteRender(ECS::Comp::Camera& cam, ECS::Comp::Transform& camTrans,
-	ECS::Comp::Sprite& entitySprite, ECS::Comp::Transform& entityTrans, const float baseSpriteScaleOverride, Glfix_Texture* texture)
+void Mirror::ECS::System::SpriteRenderer::SingleSpriteRender(SmokCore::ECS::Comp::Camera& cam, SmokCore::ECS::Comp::Transform& camTrans,
+	ECS::Comp::Sprite& entitySprite, SmokCore::ECS::Comp::Transform& entityTrans, const float baseSpriteScaleOverride, Glfix_Texture* texture)
 {
 	if (!singleQuadRenderIsEnabled)
 		return;
@@ -243,15 +243,15 @@ void Mirror::ECS::System::SpriteRenderer::SingleSpriteRender(ECS::Comp::Camera& 
 	Glfix_Texture_Bind((texture != nullptr ? texture : blankTexture), 0);
 
 	//sets camera
-	glm::mat4 projection = glm::ortho(cam.viewWidthMin, cam.viewWidthMax,
-		cam.viewHeightMax, cam.viewHeightMin, cam.nearFieldClipping, cam.farFieldClipping);
+	glm::mat4 projection = glm::ortho(cam.viewWidthMin, cam.viewWidth,
+		cam.viewHeight, cam.viewHeightMin, cam.nearFieldClipping, cam.farFieldClipping);
 	glm::mat4 camPos = glm::mat4(1.0f);
-	camPos = glm::translate(glm::mat4(1.0f), Mirror_Math_TypePun(camTrans.position, glm::vec3)) *
+	camPos = glm::translate(glm::mat4(1.0f), Smok_Math_TypePun(camTrans.position, glm::vec3)) *
 		glm::rotate(glm::mat4(1.0f), camTrans.rotation.x, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	//positions sprite
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, Mirror_Math_TypePun(entityTrans.position, glm::vec3)) * //position
+	model = glm::translate(model, Smok_Math_TypePun(entityTrans.position, glm::vec3)) * //position
 
 	//rotation
 		glm::translate(model, glm::vec3(0.5f * entityTrans.scale.x /*(entityTrans.scale.x * baseSpriteScale)*/, entityTrans.scale.y /*(entityTrans.scale.y * baseSpriteScale)*/, 0.0f)) *//; // move origin of rotation to center of quad
@@ -272,7 +272,7 @@ void Mirror::ECS::System::SpriteRenderer::SingleSpriteRender(ECS::Comp::Camera& 
 	Glfix_VertexBuffer_Draw(Glfix_DrawType_Triangles, 0, singleQuadVertexBuffer->size);
 }
 
-void Mirror::ECS::System::SpriteRenderer::SetCamera(ECS::Comp::Camera* cam, ECS::Comp::Transform* camTrans)
+void Mirror::ECS::System::SpriteRenderer::SetCamera(SmokCore::ECS::Comp::Camera* cam, SmokCore::ECS::Comp::Transform* camTrans)
 {
 	//sets camera
 	//quadPtr = quadBuffer;
@@ -283,10 +283,10 @@ void Mirror::ECS::System::SpriteRenderer::SetCamera(ECS::Comp::Camera* cam, ECS:
 	glm::mat4 transform = glm::mat4(1.0f);
 	//glm::mat4 model = glm::mat4(1.0f);
 
-	projection = glm::ortho(cam->viewWidthMin, cam->viewWidthMax, cam->viewHeightMax, cam->viewHeightMin,
+	projection = glm::ortho(cam->viewWidthMin, cam->viewWidth, cam->viewHeight, cam->viewHeightMin,
 		cam->nearFieldClipping, cam->farFieldClipping);
 
-	transform = glm::translate(glm::mat4(1.0f), Mirror_Math_TypePun(camTrans->position, glm::vec3)) *
+	transform = glm::translate(glm::mat4(1.0f), Smok_Math_TypePun(camTrans->position, glm::vec3)) *
 		glm::rotate(glm::mat4(1.0f), camTrans->rotation.x, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	//transform = inverse(transform);
@@ -326,7 +326,7 @@ void Mirror::ECS::System::SpriteRenderer::EndBatch()
 	Flush();
 }
 
-void Mirror::ECS::System::SpriteRenderer::AddQuad(ECS::Comp::Sprite* sprite, ECS::Comp::Transform* transform)
+void Mirror::ECS::System::SpriteRenderer::AddQuad(ECS::Comp::Sprite* sprite, SmokCore::ECS::Comp::Transform* transform)
 {
 	/*if (indexCount >= maxIndicesCount)
 	{
