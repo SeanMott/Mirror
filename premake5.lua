@@ -12,7 +12,7 @@ workspace "MirrorGame"
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --includes the premake files
-include "Library/ImGUI"
+--include "Library/ImGUI"
 include "Mirror"
 
 project "LandUnknown"
@@ -40,7 +40,7 @@ project "LandUnknown"
         "Library/SmokCore/Library/GLFW/include",
         "Library/SmokCore/Library/FastDelegate",
         "Library/SmokCore/Library/entt/src",
-        "Library/SmokCore/Library",
+        "Library/SmokCore/includes",
         "Mirror/includes",
         "%{prj.name}/src",
     }

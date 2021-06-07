@@ -35,7 +35,7 @@ project "Mirror"
         "../Library/SmokCore/Library/GLFW/include",
         "../Library/SmokCore/Library/FastDelegate",
         "../Library/SmokCore/Library/entt/src",
-        "../Library/SmokCore/Library",
+        "../Library/SmokCore/includes",
         "includes",
         
     }
@@ -78,32 +78,32 @@ project "Mirror"
         symbols "On"
     
         --includes ImGUI
-        includedirs
-        {
-            "../Library/Glfix/Library/GLAD/include",
-            "../Library/ImGUI"
-        }
+     --   includedirs
+       -- {
+         --   "../Library/Glfix/Library/GLAD/include",
+           -- "../Library/ImGUI"
+        --}
 
-        links
-        {
-            "ImGUI"
-        }
+        --links
+        --{
+          --  "ImGUI"
+        --}
 
     filter "configurations:Release"
         defines "SMOK_RELEASE"
         optimize "On"
 
          --includes ImGUI
-         includedirs
-         {
-            "../Library/Glfix/Library/GLAD/include",
-             "../Library/ImGUI"
-         }
- 
-         links
-         {
-             "ImGUI"
-         }
+     --   includedirs
+       -- {
+         --   "../Library/Glfix/Library/GLAD/include",
+           -- "../Library/ImGUI"
+        --}
+
+        --links
+        --{
+          --  "ImGUI"
+        --}
     
     filter "configurations:Dist"
         defines "SMOK_DIST"
