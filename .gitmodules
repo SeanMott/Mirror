@@ -1,0 +1,3 @@
+[submodule "Library/SmokCore"]
+	path = Library/SmokCore
+	url = https://github.com/SeanMott/SmokCore.git
