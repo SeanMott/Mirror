@@ -5,5 +5,4 @@ Mirror is a 2D ECS game engine
 - [SmokCore](https://github.com/SeanMott/SmokCore.git)
 
 # Building
-`git clone --recurse-submodules https://github.com/SeanMott/Mirror.git` into your dir. In PlatformTools run the SetUp.(Bat or Shell) for your platform. Use Premake5 on the premake file in the base directory.
-
+git clone the repo into your dir. In PlatformTools run the SetUp.(Bat or Shell) for your platform. Use Premake5 on the premake file in the base directory.
