@@ -1,5 +1,5 @@
 workspace "MirrorGame"
-    architecture "x86" --"x64" --"x86"
+    architecture "x64" --"x86"
     startproject "LandUnknown"
 
     configurations
