@@ -68,13 +68,14 @@ void Mirror::ECS::System::BatchSpriteRenderer::Init(const uint32_t _maxQuadsPerB
 	Glfix_VertexBuffer_Layout(quadVertexBuffer, &layout);
 
 	//allocate index buffer
-	uint32_t* indices = new uint32_t[maxQuadIndicesPerBatch];
+	uint32_t* indices =  new uint32_t[maxQuadIndicesPerBatch];
 	uint32_t offset = 0;
-	for (uint32_t i = 0; i < maxQuadIndicesPerBatch; ++i)
+	for (int32_t i = 0; i < maxQuadIndicesPerBatch; i += 6)
 	{
 		indices[i + 0] = 0 + offset;
 		indices[i + 1] = 1 + offset;
 		indices[i + 2] = 2 + offset;
+		
 		indices[i + 3] = 2 + offset;
 		indices[i + 4] = 3 + offset;
 		indices[i + 5] = 0 + offset;
@@ -103,7 +104,7 @@ void Mirror::ECS::System::BatchSpriteRenderer::Shutdown()
 	Glfix_Texture_Destroy(blankTexture);
 }
 
-void Mirror::ECS::System::BatchSpriteRenderer::QuadPrebind()
+void Mirror::ECS::System::BatchSpriteRenderer::Prebind()
 {
 	Glfix_Shader_Bind(shader);
 	Glfix_Texture_Bind(blankTexture, 0);
@@ -112,13 +113,13 @@ void Mirror::ECS::System::BatchSpriteRenderer::QuadPrebind()
 	Glfix_IndexBuffer_Bind(quadIndexBuffer);
 }
 
-void Mirror::ECS::System::BatchSpriteRenderer::StartQuadBatch()
+void Mirror::ECS::System::BatchSpriteRenderer::StartBatch()
 {
 	quadBufferPtr = quadBuffer;
 	quadCount = 0;
 }
 
-void Mirror::ECS::System::BatchSpriteRenderer::EndQuadBatch()
+void Mirror::ECS::System::BatchSpriteRenderer::EndBatch()
 {
 	//pass to GPU
 	uint32_t size = (uint8_t*)quadBufferPtr - (uint8_t*)quadBuffer;
@@ -128,7 +129,7 @@ void Mirror::ECS::System::BatchSpriteRenderer::EndQuadBatch()
 	Glfix_IndexBuffer_Draw(Glfix_DrawType_Triangles, 0, quadCount);
 }
 
-void Mirror::ECS::System::BatchSpriteRenderer::SetQuadBatchCamera(SmokCore::ECS::Comp::Transform* transform, SmokCore::ECS::Comp::Camera* cam)
+void Mirror::ECS::System::BatchSpriteRenderer::SetCamera(SmokCore::ECS::Comp::Transform* transform, SmokCore::ECS::Comp::Camera* cam)
 {
 	glm::mat4 projection = glm::ortho(cam->viewWidthMin, cam->viewWidth,
 		cam->viewHeight, cam->viewHeightMin, cam->nearFieldClipping, cam->farFieldClipping);
@@ -143,8 +144,8 @@ void Mirror::ECS::System::BatchSpriteRenderer::AddQuad(SmokCore::ECS::Comp::Tran
 {
 	if (quadCount >= maxQuadsPerBatch)
 	{
-		EndQuadBatch();
-		StartQuadBatch();
+		EndBatch();
+		StartBatch();
 	}
 
 	quadBufferPtr->position = { transform->position.x, transform->position.y };
@@ -153,19 +154,19 @@ void Mirror::ECS::System::BatchSpriteRenderer::AddQuad(SmokCore::ECS::Comp::Tran
 	quadBufferPtr->textureId = (float)sprite->textureId;
 	quadBufferPtr++;
 
-	quadBufferPtr->position = { transform->position.x + transform->scale.x, transform->position.y };
+	quadBufferPtr->position = { transform->position.x + (transform->scale.x * baseSpriteScale), transform->position.y };
 	quadBufferPtr->texCords = { 1.0f, 0.0f };
 	quadBufferPtr->color = sprite->color;
 	quadBufferPtr->textureId = (float)sprite->textureId;
 	quadBufferPtr++;
 
-	quadBufferPtr->position = { transform->position.x + transform->scale.x, transform->position.y + transform->scale.y };
+	quadBufferPtr->position = { transform->position.x + (transform->scale.x * baseSpriteScale), transform->position.y + (transform->scale.y * baseSpriteScale) };
 	quadBufferPtr->texCords = { 1.0f, 1.0f };
 	quadBufferPtr->color = sprite->color;
 	quadBufferPtr->textureId = (float)sprite->textureId;
 	quadBufferPtr++;
 
-	quadBufferPtr->position = { transform->position.x, transform->position.y + transform->scale.y };
+	quadBufferPtr->position = { transform->position.x, transform->position.y + (transform->scale.y * baseSpriteScale) };
 	quadBufferPtr->texCords = { 0.0f, 1.0f };
 	quadBufferPtr->color = sprite->color;
 	quadBufferPtr->textureId = (float)sprite->textureId;

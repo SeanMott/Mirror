@@ -55,20 +55,20 @@ namespace Mirror::ECS::System
 	public:
 
 		//sets up the batch renderer
-		void Init(const uint32_t _maxQuadsPerBatch, const float _baseSpriteScale);
+		void Init(const uint32_t _maxQuadsPerBatch = 1000.0f, const float _baseSpriteScale = 15.0f);
 		//shutsdown the batch renderer
 		void Shutdown();
 
 		//prebinds all the data needed for rendering Quads
-		void QuadPrebind();
+		void Prebind();
 
 		//starts a new Quad batch
-		void StartQuadBatch();
+		void StartBatch();
 		//ends the current Quad batch
-		void EndQuadBatch();
+		void EndBatch();
 
 		//sets the camera for the Quad batch
-		void SetQuadBatchCamera(SmokCore::ECS::Comp::Transform* transform, SmokCore::ECS::Comp::Camera* cam);
+		void SetCamera(SmokCore::ECS::Comp::Transform* transform, SmokCore::ECS::Comp::Camera* cam);
 		//adds a quad to the Quad batch
 		void AddQuad(SmokCore::ECS::Comp::Transform* transform, Mirror::ECS::Comp::Sprite* sprite);
 
